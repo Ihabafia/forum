@@ -1,18 +1,32 @@
-<script setup lang="ts">
+<script lang="ts" setup>
+import AppFullLogo from '@/components/AppFullLogo.vue';
 import NavFooter from '@/components/NavFooter.vue';
 import NavMain from '@/components/NavMain.vue';
 import NavUser from '@/components/NavUser.vue';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
-import { Link } from '@inertiajs/vue3';
-import { BookOpen, Folder, LayoutGrid } from 'lucide-vue-next';
-import AppLogo from './AppLogo.vue';
+import { Link, usePage } from '@inertiajs/vue3';
+import { StickyNote } from 'lucide';
+import { BookOpen, Folder, HomeIcon, LayoutGrid } from 'lucide-vue-next';
 
 const mainNavItems: NavItem[] = [
+    {
+        title: 'Home',
+        href: route('home'),
+        icon: HomeIcon,
+        when: false,
+    },
     {
         title: 'Dashboard',
         href: '/dashboard',
         icon: LayoutGrid,
+        when: usePage().props.auth.user,
+    },
+    {
+        title: 'Posts',
+        href: '/posts',
+        icon: StickyNote,
+        when: true,
     },
 ];
 
@@ -35,9 +49,9 @@ const footerNavItems: NavItem[] = [
         <SidebarHeader>
             <SidebarMenu>
                 <SidebarMenuItem>
-                    <SidebarMenuButton size="lg" as-child>
+                    <SidebarMenuButton as-child class="h-16" size="lg">
                         <Link :href="route('dashboard')">
-                            <AppLogo />
+                            <AppFullLogo />
                         </Link>
                     </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -50,7 +64,7 @@ const footerNavItems: NavItem[] = [
 
         <SidebarFooter>
             <NavFooter :items="footerNavItems" />
-            <NavUser />
+            <NavUser v-if="usePage().props.auth.user" />
         </SidebarFooter>
     </Sidebar>
     <slot />

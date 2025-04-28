@@ -1,4 +1,4 @@
-<script lang="ts" setup>
+<script setup lang="ts">
 import type { HTMLAttributes } from 'vue';
 
 defineOptions({
@@ -13,5 +13,5 @@ defineProps<Props>();
 </script>
 
 <template>
-    <img alt="Digital Outline Logo" src="/imgs/logo.svg" />
+    <img src="/imgs/full-logo.svg" :class="className"  alt="Digital Outline Logo"/>
 </template>
