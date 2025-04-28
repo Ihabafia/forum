@@ -6,6 +6,7 @@ use App\Models\Post;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
 
 class PostFactory extends Factory
 {
@@ -16,7 +17,7 @@ class PostFactory extends Factory
         return [
             'user_id' => User::factory(),
             'title' => str($this->faker->sentence())->beforeLast('.')->title(),
-            'body' => $this->faker->realTextBetween(600, 1000),
+            'body' => Collection::times(rand(3, 8), fn () => $this->faker->realTextBetween(750, 1500))->join(PHP_EOL.PHP_EOL),
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
         ];

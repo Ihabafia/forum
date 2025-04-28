@@ -16,6 +16,11 @@ class Post extends Model
         return $query->with('comments');
     }
 
+    public function scopeIncludeUser($query)
+    {
+        return $query->with('user');
+    }
+
     public function scopeIncludeCommentsAndUser($query)
     {
         return $query->with(['comments', 'user']);

@@ -6,8 +6,7 @@ import NavUser from '@/components/NavUser.vue';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/vue3';
-import { StickyNote } from 'lucide';
-import { BookOpen, Folder, HomeIcon, LayoutGrid } from 'lucide-vue-next';
+import { BookOpen, Folder, HomeIcon, LayoutGrid, StickyNote } from 'lucide-vue-next';
 
 const mainNavItems: NavItem[] = [
     {

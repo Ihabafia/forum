@@ -35,6 +35,13 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    protected $appends = ['avatar'];
+
+    public function getAvatarAttribute(): string
+    {
+        return 'https://www.gravatar.com/avatar/'.md5(strtolower(trim($this->email)));
+    }
+
     public function posts(): HasMany
     {
         return $this->hasMany(Post::class);
