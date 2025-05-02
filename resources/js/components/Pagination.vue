@@ -47,7 +47,7 @@
                             'text-gray-900 ring-1 ring-gray-300 ring-inset hover:bg-gray-200 focus:outline-offset-0 dark:text-gray-300 dark:ring-gray-600 dark:hover:bg-gray-800':
                                 !link.active,
                         }"
-                        :href="link.url"
+                        :href="link.url ?? ''"
                         :only="only"
                         class="relative inline-flex items-center px-4 py-2"
                         preserve-scroll
@@ -70,12 +70,14 @@ const props = defineProps({
         required: true,
     },
     only: {
-        type: Array,
+        type: Array as () => string[],
         default: () => [],
     },
 });
 
 // Computed properties for previous and next URLs
-const previousUrl = computed(() => props.meta.links[0].url);
-const nextUrl = computed(() => [...props.meta.links].reverse()[0].url);
+// const previousUrl = computed(() => props.meta.links[0].url ?? '#');
+// const nextUrl = computed(() => [...props.meta.links].reverse()[0].url ?? '#');
+const previousUrl = computed(() => props.meta?.links?.[0]?.url || '');
+const nextUrl = computed(() => (props.meta?.links ? [...props.meta.links].reverse()[0]?.url || '' : ''));
 </script>

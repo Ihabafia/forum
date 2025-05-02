@@ -6,6 +6,7 @@ use App\Models\Comment;
 use App\Models\Post;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class CommentController extends Controller
 {
@@ -13,6 +14,8 @@ class CommentController extends Controller
 
     public function store(Request $request, Post $post)
     {
+        Gate::authorize('create', Comment::class);
+
         $validated = $request->validate([
             'body' => ['required', 'string', 'max:2500'],
         ]);
@@ -27,14 +30,28 @@ class CommentController extends Controller
             ->with('success', 'Comment added successfully.');
     }
 
+    public function update(Request $request, Comment $comment)
+    {
+        Gate::authorize('update', $comment);
+
+        $validated = $request->validate([
+            'body' => ['required', 'string', 'max:2500'],
+        ]);
+
+        $comment->update($validated);
+
+        return to_route('posts.show', ['post' => $comment->post_id, 'page' => $request->query('page')])
+            ->with('success', 'Comment updated successfully.');
+    }
+
     public function destroy(Request $request, Comment $comment)
     {
-        $this->authorize('delete', $comment);
+        Gate::authorize('delete', $comment);
 
         $comment->delete();
         /* $this->authorize('delete', $comment); */
 
-        return to_route('posts.show', $comment->post_id)
+        return to_route('posts.show', ['post' => $comment->post_id, 'page' => $request->query('page')])
             ->with('success', 'Comment deleted successfully.');
     }
 }

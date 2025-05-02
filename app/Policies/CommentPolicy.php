@@ -10,8 +10,22 @@ class CommentPolicy
 {
     use HandlesAuthorization;
 
-    public function delete(User $user, Comment $comment): bool
+    public function create(User $user)
+    {
+        return true;
+    }
+
+    public function update(User $user, Comment $comment): bool
     {
         return $user->id === $comment->user_id;
+    }
+
+    public function delete(User $user, Comment $comment): bool
+    {
+        if ($user->id !== $comment->user_id) {
+            return false;
+        }
+
+        return $comment->created_at->isAfter(now()->subHour());
     }
 }

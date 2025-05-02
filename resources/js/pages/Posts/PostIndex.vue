@@ -1,23 +1,3 @@
-<script lang="ts" setup>
-import Container from '@/components/Container.vue';
-import Pagination from '@/components/Pagination.vue';
-import AppLayout from '@/layouts/AppLayout.vue';
-import { type BreadcrumbItem } from '@/types';
-import { relativeDate } from '@/Utilities/date';
-import { Head, Link } from '@inertiajs/vue3';
-
-const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'Posts',
-        href: '/posts',
-    },
-];
-
-defineProps(['posts']);
-
-const formatedDate = (post) => relativeDate(post.created_at);
-</script>
-
 <template>
     <Head title="Posts" />
 
@@ -38,3 +18,22 @@ const formatedDate = (post) => relativeDate(post.created_at);
         </Container>
     </AppLayout>
 </template>
+<script lang="ts" setup>
+import Container from '@/components/Container.vue';
+import Pagination from '@/components/Pagination.vue';
+import AppLayout from '@/layouts/AppLayout.vue';
+import { type BreadcrumbItem } from '@/types';
+import { relativeDate } from '@/Utilities/date';
+import { Head, Link } from '@inertiajs/vue3';
+
+const breadcrumbs: BreadcrumbItem[] = [
+    {
+        title: 'Posts',
+        href: '/posts',
+    },
+];
+
+defineProps(['posts']);
+console.log('Posts');
+const formatedDate = (post) => relativeDate(post.created_at);
+</script>

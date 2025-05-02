@@ -41,3 +41,25 @@ it('prevents deleting a comment you did not create', function () {
         ->delete(route('comments.destroy', $comment))
         ->assertForbidden();
 });
+
+it('prevents deleting a comment posted over an hour ago', function () {
+    // Arrange
+    $this->freezeTime();
+    $comment = Comment::factory()->create();
+    $this->travel(1)->hour();
+
+    // Act & Assert
+    actingAs($comment->user)
+        ->delete(route('comments.destroy', $comment))
+        ->assertForbidden();
+});
+
+it('redirects to the post show page with the page query parameter', function () {
+    // Arrange
+    $comment = Comment::factory()->create();
+
+    // Act & Assert
+    actingAs($comment->user)
+        ->delete(route('comments.destroy', ['comment' => $comment, 'page' => 2]))
+        ->assertRedirect(route('posts.show', ['post' => $comment->post_id, 'page' => 2]));
+});
