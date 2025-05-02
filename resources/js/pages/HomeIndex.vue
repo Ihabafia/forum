@@ -1,8 +1,7 @@
-<script setup lang="ts">
-import { Head, Link, usePage } from '@inertiajs/vue3';
+<script lang="ts" setup>
 import AppFullLogoIcon from '@/components/AppFullLogoIcon.vue';
 import NavLink from '@/components/NavLink.vue';
-import AppLayout from '@/layouts/AppLayout.vue';
+import { Head, Link, usePage } from '@inertiajs/vue3';
 
 const menu = [
     {
@@ -18,25 +17,20 @@ const menu = [
     },
 ];
 
-defineProps([
-    'posts',
-])
+defineProps(['posts']);
 </script>
 
 <template>
     <Head title="Welcome">
-        <link rel="preconnect" href="https://rsms.me/" />
-        <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+        <link href="https://rsms.me/" rel="preconnect" />
+        <link href="https://rsms.me/inter/inter.css" rel="stylesheet" />
     </Head>
-    <div class="flex min-h-screen flex-col items-center bg-[#FDFDFC] p-6 text-[#1b1b18] dark:bg-[#0a0a0a] lg:justify-start lg:p-8">
-        <header class="flex justify-between items-center not-has-[nav]:hidden mb-6 w-full max-w-[335px] text-sm lg:max-w-5xl">
-            <div class="flex justify-start items-center">
-                <AppFullLogoIcon class-name="w-[150px] mr-3" class="size-8 fill-current text-[var(--foreground)] dark:text-white" />
+    <div class="flex min-h-screen flex-col items-center bg-[#FDFDFC] p-6 text-[#1b1b18] lg:justify-start lg:p-8 dark:bg-[#0a0a0a]">
+        <header class="mb-6 flex w-full max-w-[335px] items-center justify-between text-sm not-has-[nav]:hidden lg:max-w-5xl">
+            <div class="flex items-center justify-start">
+                <AppFullLogoIcon class="size-8 fill-current text-[var(--foreground)] dark:text-white" class-name="w-[150px] mr-3" />
                 <template v-for="item in menu" :key="item.title">
-                    <NavLink v-if="item.when ? item.when() : true"
-                          :href="item.url"
-                          :active="route().current(item.route)"
-                    >
+                    <NavLink v-if="item.when ? item.when() : true" :active="route().current(item.route)" :href="item.url">
                         {{ item.title }}
                     </NavLink>
                 </template>
@@ -66,17 +60,17 @@ defineProps([
                 </template>
             </nav>
         </header>
-        <div class="duration-750 starting:opacity-0 flex w-full items-center justify-center opacity-100 transition-opacity">
-            <main class="flex w-full max-w-[535px] h-lvh flex-col-reverse overflow-hidden rounded-lg lg:max-w-5xl lg:flex-row">
-<!--                <div
-                    class="flex-1 rounded-bl-lg rounded-br-lg bg-white p-4 pb-6 text-[13px] leading-[20px]
-                    shadow-[inset_0px_0px_0px_1px_rgba(26,26,0,0.16)] dark:bg-[#161615] dark:text-[#EDEDEC]
-                    dark:shadow-[inset_0px_0px_0px_1px_#fffaed2d] lg:rounded-br-none lg:rounded-tl-lg lg:p-10"
-                >
-                    Hello world!
-                </div>-->
+        <div class="flex w-full items-center justify-center opacity-100 transition-opacity duration-750 starting:opacity-0">
+            <main class="flex h-lvh w-full max-w-[535px] flex-col-reverse overflow-hidden rounded-lg lg:max-w-5xl lg:flex-row">
+                <!--                <div
+                                    class="flex-1 rounded-bl-lg rounded-br-lg bg-white p-4 pb-6 text-[13px] leading-[20px]
+                                    shadow-[inset_0px_0px_0px_1px_rgba(26,26,0,0.16)] dark:bg-[#161615] dark:text-[#EDEDEC]
+                                    dark:shadow-[inset_0px_0px_0px_1px_#fffaed2d] lg:rounded-br-none lg:rounded-tl-lg lg:p-10"
+                                >
+                                    Hello world!
+                                </div>-->
             </main>
         </div>
-        <div class="h-14.5 hidden lg:block"></div>
+        <div class="hidden h-14.5 lg:block"></div>
     </div>
 </template>

@@ -25,9 +25,8 @@
 import { relativeDate } from '@/Utilities/date';
 import { Button } from '@/components/ui/button';
 
-const props = defineProps(['comment']);
-
-const emit = defineEmits(['editComment', 'deleteComment']);
+defineProps(['comment']);
+defineEmits(['editComment', 'deleteComment']);
 
 const formatedDate = (date) => relativeDate(date);
 </script>
