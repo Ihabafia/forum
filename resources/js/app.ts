@@ -2,6 +2,7 @@ import '../css/app.css';
 
 import { createInertiaApp } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
+import { modal } from 'momentum-modal';
 import type { DefineComponent } from 'vue';
 import { createApp, h } from 'vue';
 import { ZiggyVue } from 'ziggy-js';
@@ -11,6 +12,7 @@ import { initializeTheme } from './composables/useAppearance';
 declare module 'vite/client' {
     interface ImportMetaEnv {
         readonly VITE_APP_NAME: string;
+
         [key: string]: string | boolean | undefined;
     }
 
@@ -28,6 +30,9 @@ createInertiaApp({
     setup({ el, App, props, plugin }) {
         createApp({ render: () => h(App, props) })
             .use(plugin)
+            .use(modal, {
+                resolve: (name: string) => resolvePageComponent(`./Modals/${name}.vue`, import.meta.glob<DefineComponent>('./Modals/**/*.vue')),
+            })
             .use(ZiggyVue)
             .mount(el);
     },

@@ -1,7 +1,8 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import { SidebarProvider } from '@/components/ui/sidebar';
-import { usePage } from '@inertiajs/vue3';
 import { SharedData } from '@/types';
+import { usePage } from '@inertiajs/vue3';
+import { Modal } from 'momentum-modal';
 
 interface Props {
     variant?: 'header' | 'sidebar';
@@ -13,6 +14,7 @@ const isOpen = usePage<SharedData>().props.sidebarOpen;
 </script>
 
 <template>
+    <Modal />
     <div v-if="variant === 'header'" class="flex min-h-screen w-full flex-col">
         <slot />
     </div>

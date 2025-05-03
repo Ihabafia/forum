@@ -10,7 +10,8 @@
                 <span class="font-bold dark:text-gray-400"> {{ formatedDate(comment.created_at) }} </span>.
             </span>
             <div class="flex items-center justify-end space-x-3 text-right empty:hidden">
-                <form v-if="comment.can?.update" @submit.prevent="$emit('editComment', comment.id)">
+                <Link :href="route('comment-modal.edit', comment.id)">Test</Link>
+                <form v-if="comment.can?.update" @submit.prevent="route('comment-modal.edit', comment.id)">
                     <Button class="cursor-pointer p-0 font-bold text-indigo-500" type="submit" variant="link">Edit </Button>
                 </form>
                 <form v-if="comment.can?.delete" @submit.prevent="$emit('deleteComment', comment.id)">
@@ -24,6 +25,7 @@
 <script lang="ts" setup>
 import { relativeDate } from '@/Utilities/date';
 import { Button } from '@/components/ui/button';
+import { Link } from '@inertiajs/vue3';
 
 defineProps(['comment']);
 defineEmits(['editComment', 'deleteComment']);
