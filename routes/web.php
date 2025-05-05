@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\CommentModalController;
 use App\Http\Controllers\PostController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -19,6 +20,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('dashboard');
 
     Route::resource('posts.comments', CommentController::class)->shallow()->only(['store', 'destroy', 'update']);
+    Route::get('comments/{comment}/m/edit', [CommentModalController::class, 'edit'])->name('comment-modal.edit');
+    Route::get('post/{post}/comment/m/create', [CommentModalController::class, 'create'])->name('comment-modal.create');
+    Route::get('comments/{comment}/m/confirm', [CommentModalController::class, 'destroy'])->name('comment-modal.destroy');
 });
 
 Route::get('posts', [PostController::class, 'index'])->name('posts.index');

@@ -34,6 +34,5 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 defineProps(['posts']);
-console.log('Posts');
 const formatedDate = (post) => relativeDate(post.created_at);
 </script>
