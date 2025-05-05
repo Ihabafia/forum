@@ -29,11 +29,6 @@ function destroyComment() {
                 <ModalBody>
                     <div class="text-md mb-4 font-semibold text-red-600 dark:text-red-500">You are about to delete the comment:</div>
                     <blockquote class="justify-sart flex size-full text-sm text-gray-800 dark:text-gray-400">"{{ comment.body }}"</blockquote>
-                    <div class="flex justify-center">
-                        <div class="bg-gradient-to-r from-lime-500 to-purple-400 bg-clip-text text-base leading-tight text-transparent md:text-lg">
-                            Ihab Abou Afia
-                        </div>
-                    </div>
                 </ModalBody>
                 <!-- Modal Footer -->
                 <ModalFooter>
