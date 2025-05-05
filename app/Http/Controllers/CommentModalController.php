@@ -11,7 +11,7 @@ class CommentModalController extends Controller
     {
         $comment->load(['post', 'user']);
 
-        return inertia()->modal('EditComment', [
+        return inertia()->modal('AddEditComment', [
             'comment' => fn () => $comment,
         ])->baseRoute('posts.show', $comment->post_id);
     }
@@ -20,8 +20,15 @@ class CommentModalController extends Controller
     {
         $post->load(['user']);
 
-        return inertia()->modal('CreateComment', [
-            'comment' => fn () => $post,
+        return inertia()->modal('AddEditComment', [
+            'post' => fn () => $post,
         ])->baseRoute('posts.show', $post->id);
+    }
+
+    public function destroy(Comment $comment)
+    {
+        return inertia()->modal('DeleteComment', [
+            'comment' => fn () => $comment,
+        ])->baseRoute('posts.show', $comment->post_id);
     }
 }

@@ -46,7 +46,7 @@
                 <div v-if="comments.meta.total > 0">
                     <ul class="divide-y">
                         <li v-for="comment in comments.data" :key="comment.id" class="px-0 py-4">
-                            <Comment :comment="comment" @deleteComment="deleteComment" @editComment="editComment" />
+                            <Comment :comment="comment" @deleteComment="deleteComment" />
                         </li>
                     </ul>
                     <Pagination :meta="comments.meta" :only="['comments']" />
@@ -81,7 +81,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 const commentIdBeingEdited = ref(null);
-const commentTextAreaRef = ref(null);
+// const commentTextAreaRef = ref(null);
 
 const formatedDate = computed(() => relativeDate(props.post.created_at));
 const commentBeingEdit = computed(() => {
@@ -100,11 +100,11 @@ const commentAction = computed(() => {
     return commentIdBeingEdited.value ? 'Update Comment' : 'Add Comment';
 });
 
-const editComment = (commentId) => {
-    commentIdBeingEdited.value = commentId;
-    commentForm.body = commentBeingEdit.value?.body;
-    commentTextAreaRef.value?.focus();
-};
+// const editComment = (commentId) => {
+//     commentIdBeingEdited.value = commentId;
+//     commentForm.body = commentBeingEdit.value?.body;
+//     commentTextAreaRef.value?.focus();
+// };
 
 const updateComment = () => {
     commentForm.put(

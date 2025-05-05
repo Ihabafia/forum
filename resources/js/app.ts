@@ -1,10 +1,13 @@
+import 'vue-toastification/dist/index.css';
 import '../css/app.css';
 
+import { notifications } from '@/plugins/notifications';
 import { createInertiaApp } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { modal } from 'momentum-modal';
 import type { DefineComponent } from 'vue';
 import { createApp, h } from 'vue';
+import Toast from 'vue-toastification';
 import { ZiggyVue } from 'ziggy-js';
 import { initializeTheme } from './composables/useAppearance';
 
@@ -34,6 +37,12 @@ createInertiaApp({
                 resolve: (name: string) => resolvePageComponent(`./Modals/${name}.vue`, import.meta.glob<DefineComponent>('./Modals/**/*.vue')),
             })
             .use(ZiggyVue)
+            .use(Toast, {
+                transition: 'Vue-Toastification__slideBlurred',
+                maxToasts: 4,
+                newestOnTop: true,
+            })
+            .use(notifications)
             .mount(el);
     },
     progress: {

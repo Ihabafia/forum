@@ -1,22 +1,22 @@
 <script lang="ts" setup>
+import ModalHeader from '@/components/Modals/ModalHeader.vue';
 import { Dialog, DialogPanel, TransitionChild, TransitionRoot } from '@headlessui/vue';
-import { X } from 'lucide-vue-next';
 import { useModal } from 'momentum-modal';
 
 const { show, close, redirect } = useModal();
 defineProps({
-    size: {
-        type: String,
-        required: false,
-        default: '2xl',
-        validator: (value: string) => {
-            return ['sm', 'md', 'lg', 'xl', '2xl', '3xl', '4xl'].includes(value);
-        },
-    },
     title: {
         type: String,
         required: false,
-        default: ' ',
+        default: null,
+    },
+    size: {
+        type: String,
+        required: false,
+        default: '3xl',
+        validator: (value: string) => {
+            return ['sm', 'md', 'lg', 'xl', '2xl', '3xl', '4xl'].includes(value);
+        },
     },
 });
 </script>
@@ -57,40 +57,12 @@ defineProps({
                                 'max-w-3xl': size === '3xl',
                                 'max-w-4xl': size === '4xl',
                             }"
-                            class="w-full text-left align-middle shadow-xl"
+                            class="w-full px-4 text-left align-middle shadow-xl"
                         >
-                            <div class="flex flex-col items-start">
-                                <div
-                                    class="flex w-full items-center justify-between rounded-t-xl border-b-2 border-gray-100 bg-gray-200 px-6 pt-5 pb-3 dark:border-gray-700 dark:bg-gray-900"
-                                >
-                                    <slot class="text-lg font-bold" name="title">
-                                        <div v-if="title" class="text-lg font-bold">{{ title }}</div>
-                                    </slot>
-                                    <X class="cursor-pointer" @click="close" />
-                                </div>
-                                <div class="size-full max-h-[calc(100vh-25rem)] min-h-32 overflow-y-auto bg-gray-100 px-6 py-4 dark:bg-gray-800">
-                                    <slot />
-                                </div>
-                                <div class="flex size-full items-center justify-start gap-2 rounded-b-xl bg-gray-200 px-6 py-5 dark:bg-gray-900">
-                                    <!--                                    <slot name="buttons">
-                                                                            <Button class="mb-5 border-t-2 border-gray-100 px-5 pb-3" variant="default" @click="close">Save </Button>
-                                                                        </slot>-->
-                                    <button
-                                        class="group relative h-10 cursor-pointer overflow-hidden rounded-md bg-pink-600 px-6 font-semibold text-neutral-50 transition"
-                                        @click="close"
-                                    >
-                                        <span>Save</span>
-                                        <span class="absolute inset-0 block h-full w-0 bg-white/20 transition-[width] group-hover:w-full"></span>
-                                    </button>
-                                    <button
-                                        class="group relative h-10 cursor-pointer overflow-hidden rounded-md bg-gray-200 px-6 font-semibold text-gray-950 transition dark:text-neutral-50"
-                                        @click="close"
-                                    >
-                                        <span>Cancel</span>
-                                        <span class="absolute inset-0 block h-full w-0 bg-white/40 transition-[width] group-hover:w-full" />
-                                    </button>
-                                </div>
-                            </div>
+                            <template v-if="title">
+                                <ModalHeader :title="title" />
+                            </template>
+                            <slot :close="close" />
                         </DialogPanel>
                     </TransitionChild>
                 </div>
