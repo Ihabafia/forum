@@ -1,6 +1,16 @@
 <template>
     <AppLayout :breadcrumbs="breadcrumbs">
         <Container>
+            <div class="fixed top-6 right-6 flex items-center justify-end gap-4 text-right">
+                <div v-if="post.can?.delete">
+                    <PrimaryLink :href="route('posts.delete', post.id)" variant="delete">
+                        <div>Delete Post</div>
+                    </PrimaryLink>
+                </div>
+                <div v-if="post.can?.update">
+                    <PrimaryLink :href="route('posts.edit', post.id)"> Edit Post</PrimaryLink>
+                </div>
+            </div>
             <div class="text-2xl font-bold">
                 {{ post.title }}
             </div>
@@ -14,31 +24,8 @@
 
             <div>
                 <div class="mt-8 text-xl font-semibold">Comments</div>
-
-                <!--                <form v-if="$page.props.auth.user" class="mt-3" @submit.prevent="() => (commentIdBeingEdited ? updateComment() : addComment())">
-                                    <div>
-                                        <Label class="sr-only text-sm font-medium" for="body">Comment</Label>
-                                        <textarea
-                                            id="body"
-                                            ref="commentTextAreaRef"
-                                            v-model="commentForm.body"
-                                            class="dark:gray-50 dark:gray-50 block w-full rounded-md border-0 bg-gray-50 p-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-gray-300 ring-inset placeholder:text-gray-400 focus:ring-2 focus:ring-pink-600 focus:ring-inset sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-gray-50"
-                                            placeholder="Write your comment here..."
-                                            rows="7"
-                                        ></textarea>
-                                        <InputError :message="commentForm.errors.body" class="mt-1" />
-                                        <Button
-                                            :disabled="commentForm.processing"
-                                            class="mt-5 cursor-pointer border-2 border-pink-500 bg-pink-500 hover:bg-pink-600 dark:bg-pink-600 dark:text-white dark:hover:bg-pink-700"
-                                            type="submit"
-                                            >{{ commentAction }}
-                                        </Button>
-                                        <Button v-if="commentIdBeingEdited" class="ml-3" type="button" variant="link" @click="cancelEditComment"> Cancel </Button>
-                                    </div>
-                                </form>-->
-                <!--                    :disabled="commentForm.processing"-->
                 <Link
-                    :href="route('comment-modal.create', post.id)"
+                    :href="route('posts.comments.create', post.id)"
                     class="mt-5 inline-block cursor-pointer rounded-md border-2 border-pink-500 bg-pink-500 p-2 text-sm font-semibold text-gray-50 hover:bg-pink-600 dark:bg-pink-600 dark:text-white dark:hover:bg-pink-700"
                     >Add Comment
                 </Link>
@@ -46,7 +33,7 @@
                 <div v-if="comments.meta.total > 0">
                     <ul class="divide-y">
                         <li v-for="comment in comments.data" :key="comment.id" class="px-0 py-4">
-                            <Comment :comment="comment" @deleteComment="deleteComment" />
+                            <Comment :comment="comment" />
                         </li>
                     </ul>
                     <Pagination :meta="comments.meta" :only="['comments']" />
@@ -61,79 +48,44 @@
 import Comment from '@/components/Comment.vue';
 import Container from '@/components/Container.vue';
 import Pagination from '@/components/Pagination.vue';
+import PrimaryLink from '@/components/ui/button/PrimaryLink.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
 import type { BreadcrumbItem } from '@/types';
 import { relativeDate } from '@/Utilities/date';
-import { Link, router, useForm } from '@inertiajs/vue3';
-import { computed, ref } from 'vue';
+import { off, on } from '@/Utilities/eventBuss';
+import { Link } from '@inertiajs/vue3';
+import { computed, onMounted, onUnmounted, ref } from 'vue';
 
 const props = defineProps(['post', 'comments']);
 
-const breadcrumbs: BreadcrumbItem[] = [
+const breadcrumbs = ref<BreadcrumbItem[]>([
     {
         title: 'Posts',
         href: '/posts',
     },
     {
         title: props.post.title,
-        href: '/posts/1',
+        href: `/posts/${props.post.id}`,
     },
-];
+]);
 
-const commentIdBeingEdited = ref(null);
-// const commentTextAreaRef = ref(null);
+onMounted(() => {
+    const updateBreadcrumbs = (updatedPost: { title: string }) => {
+        breadcrumbs.value = [
+            breadcrumbs.value[0],
+            {
+                ...breadcrumbs.value[1],
+                title: updatedPost.title,
+            },
+        ];
+    };
+
+    on('postUpdated', updateBreadcrumbs);
+
+    onUnmounted(() => {
+        off('postUpdated', updateBreadcrumbs);
+    });
+});
 
 const formatedDate = computed(() => relativeDate(props.post.created_at));
-const commentBeingEdit = computed(() => {
-    return props.comments.data.find((comment) => comment.id === commentIdBeingEdited.value);
-});
-
-const commentForm = useForm({
-    body: '',
-});
-
-const cancelEditComment = () => {
-    commentIdBeingEdited.value = null;
-    commentForm.reset();
-};
-const commentAction = computed(() => {
-    return commentIdBeingEdited.value ? 'Update Comment' : 'Add Comment';
-});
-
-// const editComment = (commentId) => {
-//     commentIdBeingEdited.value = commentId;
-//     commentForm.body = commentBeingEdit.value?.body;
-//     commentTextAreaRef.value?.focus();
-// };
-
-const updateComment = () => {
-    commentForm.put(
-        route('comments.update', {
-            comment: commentIdBeingEdited.value,
-            page: props.comments.meta.current_page,
-        }),
-        {
-            preserveScroll: true,
-            onSuccess: () => {
-                cancelEditComment();
-            },
-        },
-    );
-};
-
-const addComment = () => {
-    commentForm.post(route('posts.comments.store', props.post.id), {
-        preserveScroll: true,
-        onSuccess: () => commentForm.reset(),
-    });
-};
-
-const deleteComment = (commentId) => {
-    router.delete(route('comments.destroy', { comment: commentId, page: props.comments.meta.current_page }), {
-        preserveScroll: true,
-        onSuccess: () => {
-            // Optionally, you can add a success message or perform any other action after deletion
-        },
-    });
-};
 </script>

@@ -8,7 +8,7 @@ use App\Models\Post;
 it('it can show a post', function () {
     $post = Post::factory()->create();
 
-    $this->get(route('posts.show', $post))
+    $this->get($post->showRoute())
         ->assertInertiaComponent('Posts/PostShow');
 });
 
@@ -17,7 +17,7 @@ it('passes the post to the view', function () {
 
     $post->load(['user']);
 
-    $this->get(route('posts.show', $post))
+    $this->get($post->showRoute())
         ->assertHasResource('post', PostResource::make($post));
 });
 
@@ -27,6 +27,6 @@ it('passes comments to the view', function () {
 
     $comments->load(['user']);
 
-    $this->get(route('posts.show', $post))
+    $this->get($post->showRoute())
         ->assertHasPaginatedResource('comments', CommentResource::collection($comments->reverse()));
 });

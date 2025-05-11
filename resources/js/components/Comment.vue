@@ -10,11 +10,20 @@
                 <span class="font-bold dark:text-gray-400"> {{ formatedDate(comment.created_at) }} </span>.
             </span>
             <div class="flex items-center justify-end space-x-3 text-right empty:hidden">
-                <Link v-if="comment.can?.update" :href="route('comment-modal.edit', comment.id)" class="p-0 font-bold text-indigo-500"> Edit </Link>
-                <Link v-if="comment.can?.delete" :href="route('comment-modal.destroy', comment.id)" class="p-0 font-bold text-red-500"> Delete </Link>
-                <!--                <form v-if="comment.can?.delete" @submit.prevent="$emit('deleteComment', comment.id)">
-                                    <Button class="cursor-pointer p-0 text-red-500" type="submit" variant="link">Delete</Button>
-                                </form>-->
+                <Link
+                    v-if="comment.can?.update"
+                    :href="route('comments.edit', { comment: comment.id, page: page })"
+                    class="p-0 font-bold text-indigo-500"
+                >
+                    Edit
+                </Link>
+                <Link
+                    v-if="comment.can?.delete"
+                    :href="route('comments.delete', { comment: comment.id, page: page })"
+                    class="p-0 font-bold text-red-500"
+                >
+                    Delete
+                </Link>
             </div>
         </div>
     </div>
@@ -23,9 +32,14 @@
 <script lang="ts" setup>
 import { relativeDate } from '@/Utilities/date';
 import { Link } from '@inertiajs/vue3';
+import { computed } from 'vue';
+
+const page = computed(() => {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('page') ?? 1;
+});
 
 defineProps(['comment']);
-defineEmits(['deleteComment']);
 
 const formatedDate = (date) => relativeDate(date);
 </script>

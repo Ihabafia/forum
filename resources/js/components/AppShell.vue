@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import ConfirmationModalWrapper from '@/components/ConfirmationModalWrapper.vue';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { SharedData } from '@/types';
 import { usePage } from '@inertiajs/vue3';
@@ -21,4 +22,5 @@ const isOpen = usePage<SharedData>().props.sidebarOpen;
     <SidebarProvider v-else :default-open="isOpen">
         <slot />
     </SidebarProvider>
+    <ConfirmationModalWrapper />
 </template>

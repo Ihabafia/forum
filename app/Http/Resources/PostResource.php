@@ -21,6 +21,14 @@ class PostResource extends JsonResource
             // 'user' => new UserResource($this->whenLoaded('user')),
             'user' => $this->whenLoaded('user', fn () => UserResource::make($this->user)),
             'comments_count' => $this->whenLoaded('comments', fn () => $this->comments->count()),
+            'route' => [
+                'show' => $this->showRoute(),
+            ],
+
+            'can' => [
+                'update' => $request->user()?->can('update', $this->resource),
+                'delete' => $request->user()?->can('delete', $this->resource),
+            ],
         ];
     }
 }

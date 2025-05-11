@@ -4,6 +4,8 @@ import Modal from '@/components/Modals/Modal.vue';
 import ModalBody from '@/components/Modals/ModalBody.vue';
 import ModalFooter from '@/components/Modals/ModalFooter.vue';
 import ModalHeader from '@/components/Modals/ModalHeader.vue';
+import CancelButton from '@/components/ui/button/CancelButton.vue';
+import PrimaryButton from '@/components/ui/button/PrimaryButton.vue';
 import { Label } from '@/components/ui/label';
 import { useForm } from '@inertiajs/vue3';
 import { computed, ref } from 'vue';
@@ -23,6 +25,10 @@ const props = defineProps({
 
 const commentTextAreaRef = ref(null);
 const commentAction = computed(() => (props.comment ? 'Update Comment' : 'Create Comment'));
+const page = computed(() => {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('page');
+});
 
 const commentForm = useForm({
     body: props.comment?.body ?? '',
@@ -32,6 +38,7 @@ function updateComment() {
     commentForm.put(
         route('comments.update', {
             comment: props.comment.id,
+            page: page.value,
         }),
     );
 }
@@ -62,17 +69,10 @@ function storeComment() {
                 </ModalBody>
                 <!-- Modal Footer -->
                 <ModalFooter>
-                    <button
-                        :disabled="commentForm.processing"
-                        class="group relative h-10 cursor-pointer overflow-hidden rounded-md bg-pink-600 px-6 font-semibold text-neutral-50 transition disabled:bg-pink-300"
-                        type="submit"
-                    >
-                        <span>Save</span>
-                        <span
-                            v-if="!commentForm.processing"
-                            class="absolute inset-0 block h-full w-0 bg-white/20 transition-[width] group-hover:w-full disabled:transition-none"
-                        ></span>
-                    </button>
+                    <div class="flex items-center justify-start gap-4">
+                        <PrimaryButton :disabled="commentForm.processing">{{ commentAction }}</PrimaryButton>
+                        <CancelButton>Cancel</CancelButton>
+                    </div>
                 </ModalFooter>
             </div>
         </form>

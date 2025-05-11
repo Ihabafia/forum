@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Post;
 use Arr;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
@@ -45,6 +46,13 @@ class HandleInertiaRequests extends Middleware
             // 'quote' => ['message' => trim($message), 'author' => trim($author)],
             'auth' => [
                 'user' => $request->user(),
+                'permissions' => [
+                    'post' => [
+                        'create' => $request->user()?->can('create', Post::class),
+                        // 'update' => $request->user()?->can('update', Post::class),
+                        // 'delete' => $request->user()?->can('delete', Post::class),
+                    ],
+                ],
             ],
             'ziggy' => [
                 ...(new Ziggy)->toArray(),
