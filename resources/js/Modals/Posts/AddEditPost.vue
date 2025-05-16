@@ -1,14 +1,17 @@
 <script lang="ts" setup>
 import InputError from '@/components/InputError.vue';
+import MarkdownEditor from '@/components/MarkdownEditor.vue';
 import Modal from '@/components/Modals/Modal.vue';
 import ModalBody from '@/components/Modals/ModalBody.vue';
 import ModalFooter from '@/components/Modals/ModalFooter.vue';
 import ModalHeader from '@/components/Modals/ModalHeader.vue';
 import CancelButton from '@/components/ui/button/CancelButton.vue';
 import { Label } from '@/components/ui/label';
+import { isInProduction } from '@/Utilities/environment';
 import { emit } from '@/Utilities/eventBuss';
 import { useForm } from '@inertiajs/vue3';
-import { computed, ref } from 'vue';
+import axios from 'axios';
+import { computed, onMounted, ref } from 'vue';
 
 const props = defineProps({
     post: {
@@ -39,9 +42,26 @@ function updatePost() {
     );
 }
 
+onMounted(() => {
+    if (!props.post?.id) {
+        postTextAreaRef.value?.focus();
+    }
+});
+
 function storePost() {
     postForm.post(route('posts.store'));
 }
+
+const autoFill = async () => {
+    if (isInProduction) {
+        return;
+    }
+
+    const response = await axios.get('/local/post-content');
+
+    postForm.title = response.data.title;
+    postForm.body = response.data.body;
+};
 </script>
 
 <template>
@@ -69,13 +89,22 @@ function storePost() {
                         </div>
                         <div class="grid gap-2">
                             <Label class="sr-only text-sm font-medium" for="body">Comment</Label>
-                            <textarea
-                                id="body"
-                                v-model="postForm.body"
-                                class="dark:gray-50 dark:gray-50 block w-full rounded-md bg-gray-50 p-3 py-1.5 text-gray-900 shadow-sm ring-2 ring-gray-200 ring-inset placeholder:text-gray-400 focus:ring-2 focus:ring-pink-500 focus:outline-none focus:ring-inset sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-gray-50 dark:ring-gray-600 dark:focus:ring-pink-600"
-                                placeholder="Write your post here..."
-                                rows="10"
-                            ></textarea>
+                            <MarkdownEditor v-model="postForm.body" editorClass="min-h-[270px]">
+                                <template #toolbar="{ editor }">
+                                    <li v-if="!isInProduction" class="border-r border-gray-300 dark:border-gray-600">
+                                        <button class="cursor-pointer px-3 py-2" title="Autofill" type="button" @click="autoFill">
+                                            <i class="ri-article-line"></i>
+                                        </button>
+                                    </li>
+                                </template>
+                            </MarkdownEditor>
+                            <!--                            <textarea
+                                                            id="body"
+                                                            v-model="postForm.body"
+                                                            class="dark:gray-50 dark:gray-50 mt-2 block w-full rounded-md bg-gray-50 p-3 py-1.5 text-gray-900 shadow-sm ring-2 ring-gray-200 ring-inset placeholder:text-gray-400 focus:ring-2 focus:ring-pink-500 focus:outline-none focus:ring-inset sm:text-sm sm:leading-6 dark:bg-gray-800 dark:text-gray-50 dark:ring-gray-600 dark:focus:ring-pink-600"
+                                                            placeholder="Write your post here..."
+                                                            rows="10"
+                                                        ></textarea>-->
                             <InputError :message="postForm.errors.body" class="mt-1" />
                         </div>
                     </div>

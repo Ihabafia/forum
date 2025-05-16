@@ -26,7 +26,7 @@ it('can generate additional query parameters on the show route', function () {
 
     // Act & Assert
     expect($post->showRoute(['page' => '2']))
-        ->toBe(route('posts.show', ['post' => $post, 'slug' => Str::slug($post->title), 'page' => '2']));
+        ->toBe(route('posts.show', ['post' => $post, 'slug' => $post->slug(), 'page' => '2']));
 });
 
 it('will redirect if the slug is incorrect', function () {
@@ -38,4 +38,16 @@ it('will redirect if the slug is incorrect', function () {
     // Act & Assert
     $this->get(route('posts.show', [$post, 'foo-bar', 'page' => 2]))
         ->assertRedirect($post->showRoute(['page' => 2]));
+});
+
+it('generates html from the markdown body', function () {
+    // Arrange
+    $post = Post::factory()->make([
+        'body' => '## Hello, how are you?',
+    ]);
+
+    $post->save();
+
+    // Act & Assert
+    expect($post->html)->toEqual(str($post->body)->markdown());
 });

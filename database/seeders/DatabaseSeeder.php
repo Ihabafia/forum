@@ -25,6 +25,7 @@ class DatabaseSeeder extends Seeder
         $users = User::all();
 
         $posts = Post::factory(200)
+            ->withFixture()
             ->has(Comment::factory($this->random())->recycle($users))
             ->recycle($users)
             ->create();
@@ -32,6 +33,6 @@ class DatabaseSeeder extends Seeder
 
     private function random(): int
     {
-        return rand(10, 25);
+        return rand(20, 30);
     }
 }

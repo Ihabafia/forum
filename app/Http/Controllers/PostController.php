@@ -64,13 +64,13 @@ class PostController extends Controller
 
         $post->update($data);
 
-        return redirect()->route('posts.show', ['post' => $post])
+        return redirect()->route('posts.show', ['post' => $post->id, 'slug' => $post->slug(), 'page' => request()->query('page')])
             ->with('success', 'Post updated successfully.');
     }
 
     public function show(Request $request, Post $post)
     {
-        if (! Str::contains($post->showRoute(), $request->getRequestUri())) {
+        if (! Str::contains($post->showRoute(request()->query()), $request->getRequestUri())) {
             return redirect()->to($post->showRoute($request->query()), status: 301);
         }
 
@@ -96,6 +96,6 @@ class PostController extends Controller
     {
         return inertia()->modal('DeletePost', [
             'post' => fn () => $post,
-        ])->baseRoute('posts.show', $post->id);
+        ])->baseRoute('posts.show', ['post' => $post->id, 'slug' => $post->slug(), 'page' => request()->query('page')]);
     }
 }

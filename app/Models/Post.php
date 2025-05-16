@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\ConvertMarkdownToHtml;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -11,6 +12,7 @@ use Str;
 
 class Post extends Model
 {
+    use ConvertMarkdownToHtml;
     use HasFactory;
 
     public function scopeIncludeComments($query)
@@ -43,8 +45,21 @@ class Post extends Model
         return Attribute::set(fn ($value) => Str::title($value));
     }
 
+    /*public function body(): Attribute
+    {
+        return Attribute::set(fn ($value) => [
+            'body' => $value,
+            'html' => str($value)->markdown(),
+        ]);
+    }*/
+
     public function showRoute(array $parameters = []): string
     {
         return route('posts.show', [$this, Str::slug($this->title), ...$parameters]);
+    }
+
+    public function slug()
+    {
+        return Str::slug($this->title);
     }
 }

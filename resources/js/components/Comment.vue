@@ -4,7 +4,7 @@
             <img :src="comment.user.avatar" alt="User Avatar" class="mr-3 h-10 w-10 rounded-full md:h-12 md:w-12" />
         </div>
         <div :id="comment.id" class="flex-1">
-            <span class="text-md block break-all">{{ comment.body }}</span>
+            <div class="prose prose-md dark:prose-invert max-w-none break-all" v-html="comment.html" />
             <span class="block pt-1 text-xs text-gray-500 first-letter:uppercase"
                 >By <span class="font-bold dark:text-gray-400"> {{ comment.user.name }} </span>,
                 <span class="font-bold dark:text-gray-400"> {{ formatedDate(comment.created_at) }} </span>.

@@ -18,9 +18,7 @@
                 Created <span class="font-bold">{{ formatedDate }}</span> by <span class="font-bold">{{ post.user.name }}</span
                 >.
             </div>
-            <article class="mt-6">
-                <pre class="font-sans whitespace-pre-wrap">{{ post.body }}</pre>
-            </article>
+            <article class="prose prose-sm dark:prose-invert mt-6 max-w-none" v-html="post.html" />
 
             <div>
                 <div class="mt-8 text-xl font-semibold">Comments</div>

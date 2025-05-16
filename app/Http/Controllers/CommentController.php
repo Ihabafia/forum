@@ -36,7 +36,7 @@ class CommentController extends Controller
 
         return inertia()->modal('AddEditComment', [
             'post' => fn () => $post,
-        ])->baseRoute('posts.show', $post->id);
+        ])->baseRoute('posts.show', ['post' => $post->id, 'slug' => $post->slug(), 'page' => request()->query('page')]);
     }
 
     public function edit(Comment $comment)
@@ -45,7 +45,7 @@ class CommentController extends Controller
 
         return inertia()->modal('AddEditComment', [
             'comment' => fn () => $comment,
-        ])->baseRoute('posts.show', ['post' => $comment->post_id, 'page' => request()->query('page')]);
+        ])->baseRoute('posts.show', ['post' => $comment->post_id, 'slug' => $comment->post->slug(), 'page' => request()->query('page')]);
     }
 
     public function update(Request $request, Comment $comment)
@@ -77,6 +77,6 @@ class CommentController extends Controller
     {
         return inertia()->modal('DeleteComment', [
             'comment' => fn () => $comment,
-        ])->baseRoute('posts.show', $comment->post_id);
+        ])->baseRoute('posts.show', ['post' => $comment->post_id, 'slug' => $comment->post->slug(), 'page' => request()->query('page')]);
     }
 }
