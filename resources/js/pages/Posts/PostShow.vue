@@ -11,8 +11,11 @@
                     <PrimaryLink :href="route('posts.edit', post.id)"> Edit Post</PrimaryLink>
                 </div>
             </div>
-            <div class="text-2xl font-bold">
-                {{ post.title }}
+            <div>
+                <TopicPill :href="route('posts.index', { topic: post.topic.slug })">
+                    {{ post.topic.name }}
+                </TopicPill>
+                <page-heading class="mt-3">{{ post.title }}</page-heading>
             </div>
             <div class="mt-1 text-sm text-gray-500">
                 Created <span class="font-bold">{{ formatedDate }}</span> by <span class="font-bold">{{ post.user.name }}</span
@@ -45,7 +48,9 @@
 <script lang="ts" setup xmlns:flux="http://www.w3.org/1999/html">
 import Comment from '@/components/Comment.vue';
 import Container from '@/components/Container.vue';
+import PageHeading from '@/components/PageHeading.vue';
 import Pagination from '@/components/Pagination.vue';
+import TopicPill from '@/components/TopicPill.vue';
 import PrimaryLink from '@/components/ui/button/PrimaryLink.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
 import type { BreadcrumbItem } from '@/types';

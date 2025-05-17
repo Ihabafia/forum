@@ -25,6 +25,11 @@ class Post extends Model
         return $query->with('user');
     }
 
+    public function scopeIncludeUserAndTopic($query)
+    {
+        return $query->with(['user', 'topic']);
+    }
+
     public function scopeIncludeCommentsAndUser($query)
     {
         return $query->with(['comments', 'user']);
@@ -38,6 +43,11 @@ class Post extends Model
     public function comments(): HasMany
     {
         return $this->hasMany(Comment::class);
+    }
+
+    public function topic(): BelongsTo
+    {
+        return $this->belongsTo(Topic::class);
     }
 
     public function title(): Attribute

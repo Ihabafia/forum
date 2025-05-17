@@ -4,7 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\CommentResource;
 use App\Http\Resources\PostResource;
+use App\Http\Resources\TopicResource;
 use App\Models\Post;
+use App\Models\Topic;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -14,16 +17,25 @@ class PostController extends Controller
 {
     use Authorizable;
 
-    public function index()
+    public function index(?Topic $topic = null)
     {
+        $posts = Post::includeUserAndTopic()
+            ->when($topic, fn (Builder $query) => $query->whereBelongsTo($topic))
+            ->latest()
+            ->latest('id')
+            ->paginate();
+
         return inertia('Posts/PostIndex', [
-            'posts' => fn () => PostResource::collection(Post::includeUser()->latest()->latest('id')->paginate()),
+            'posts' => fn () => PostResource::collection($posts),
+            'selectedTopic' => fn () => $topic ? TopicResource::make($topic) : null,
+            'topics' => fn () => TopicResource::collection(Topic::all()),
         ]);
     }
 
     public function store(Request $request)
     {
         $data = $request->validate([
+            'topic_id' => ['required', 'exists:topics,id'],
             'title' => ['required', 'string', 'min:10', 'max:120'],
             'body' => ['required', 'string', 'min:100', 'max:10000'],
         ]);
@@ -42,7 +54,7 @@ class PostController extends Controller
         Gate::authorize('create', $post);
 
         return inertia()->modal('Posts/AddEditPost', [
-            'post' => fn () => $post,
+            'topics' => fn () => TopicResource::collection(Topic::all()),
         ])->baseRoute('posts.index');
     }
 
@@ -52,6 +64,7 @@ class PostController extends Controller
 
         return inertia()->modal('Posts/AddEditPost', [
             'post' => fn () => $post,
+            'topics' => fn () => TopicResource::collection(Topic::all()),
         ])->baseRoute('posts.index');
     }
 
@@ -60,11 +73,13 @@ class PostController extends Controller
         $data = $request->validate([
             'title' => ['required', 'string', 'min:10', 'max:120'],
             'body' => ['required', 'string', 'min:10', 'max:10000'],
+            'topic_id' => ['required', 'exists:topics,id'],
         ]);
 
         $post->update($data);
 
-        return redirect()->route('posts.show', ['post' => $post->id, 'slug' => $post->slug(), 'page' => request()->query('page')])
+        return redirect()->route('posts.show',
+            ['post' => $post->id, 'slug' => $post->slug(), 'page' => request()->query('page')])
             ->with('success', 'Post updated successfully.');
     }
 
@@ -74,11 +89,12 @@ class PostController extends Controller
             return redirect()->to($post->showRoute($request->query()), status: 301);
         }
 
-        $post->load(['user']);
+        $post->load(['user', 'topic']);
 
         return inertia('Posts/PostShow', [
             'post' => fn () => PostResource::make($post),
-            'comments' => fn () => CommentResource::collection($post->comments()->with('user')->latest()->latest('id')->paginate(5)),
+            'comments' => fn (
+            ) => CommentResource::collection($post->comments()->with('user')->latest()->latest('id')->paginate(5)),
         ]);
     }
 

@@ -30,8 +30,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('posts/{post}/delete', [PostController::class, 'delete'])->name('posts.delete');
 });
 
+Route::get('posts/{topic?}', [PostController::class, 'index'])->name('posts.index');
 Route::get('posts/{post}/{slug}', [PostController::class, 'show'])->name('posts.show');
-Route::resource('posts', PostController::class)->only(['index']);
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';

@@ -21,7 +21,8 @@ class PostResource extends JsonResource
             'comments' => CommentResource::collection($this->whenLoaded('comments')),
             // 'user' => new UserResource($this->whenLoaded('user')),
             'user' => $this->whenLoaded('user', fn () => UserResource::make($this->user)),
-            'comments_count' => $this->whenLoaded('comments', fn () => $this->comments->count()),
+            'topic' => $this->whenLoaded('topic', fn () => TopicResource::make($this->topic)),
+            // 'comments_count' => $this->whenLoaded('comments', fn () => $this->comments->count()),
             'route' => [
                 'show' => $this->showRoute(),
             ],

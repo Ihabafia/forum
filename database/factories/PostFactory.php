@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Post;
+use App\Models\Topic;
 use App\Models\User;
 use App\Support\PostFixtures;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -17,6 +18,7 @@ class PostFactory extends Factory
     {
         return [
             'user_id' => User::factory(),
+            'topic_id' => Topic::factory(),
             'title' => str($this->faker->sentence())->beforeLast('.')->title(),
             'body' => Collection::times(rand(3, 8), fn () => $this->faker->realTextBetween(750, 1500))->join(PHP_EOL.PHP_EOL),
             'created_at' => Carbon::now(),
