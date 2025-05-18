@@ -8,17 +8,17 @@ use App\Models\Post;
 it('it can show a post', function () {
     $post = Post::factory()->create();
 
-    $this->get(route('posts.show', $post))
+    $this->get($post->showRoute())
         ->assertInertiaComponent('Posts/PostShow');
 });
 
 it('passes the post to the view', function () {
     $post = Post::factory()->create();
 
-    $post->load(['user']);
+    $post->load(['user', 'topic']);
 
-    $this->get(route('posts.show', $post))
-        ->assertHasResource('post', PostResource::make($post));
+    $this->get($post->showRoute())
+        ->assertHasResource('post', PostResource::make($post)->withLikePermission()->withAddEditPermission());
 });
 
 it('passes comments to the view', function () {
@@ -27,6 +27,10 @@ it('passes comments to the view', function () {
 
     $comments->load(['user']);
 
-    $this->get(route('posts.show', $post))
-        ->assertHasPaginatedResource('comments', CommentResource::collection($comments->reverse()));
+    $expectedResource = CommentResource::collection($comments->reverse());
+
+    $expectedResource->collection->transform(fn (CommentResource $resource) => $resource->withLikePermission());
+
+    $this->get($post->showRoute())
+        ->assertHasPaginatedResource('comments', $expectedResource);
 });

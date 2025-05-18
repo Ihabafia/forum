@@ -12,7 +12,6 @@ it('requires authentication', function () {
 });
 
 it('can store a comment', function () {
-    // $this->withoutExceptionHandling();
 
     $user = User::factory()->create();
     $post = Post::factory()->create();
@@ -36,7 +35,7 @@ it('redirect to the post show page', function () {
         ->post(route('posts.comments.store', $post), [
             'body' => 'This is a comment',
         ])
-        ->assertRedirect(route('posts.show', $post));
+        ->assertRedirect($post->showRoute());
 });
 
 it('requires a valid body', function ($value) {

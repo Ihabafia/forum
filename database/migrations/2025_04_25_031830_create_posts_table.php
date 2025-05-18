@@ -14,6 +14,8 @@ return new class extends Migration
             $table->foreignIdFor(User::class)->constrained('users')->restrictOnDelete();
             $table->string('title');
             $table->longText('body');
+            $table->longText('html');
+            $table->unsignedBigInteger('likes_count')->default(0);
             $table->timestamps();
         });
     }

@@ -26,8 +26,26 @@ class CommentController extends Controller
             'user_id' => $request->user()->id,
         ]);
 
-        return to_route('posts.show', $post)
+        return redirect($post->showRoute())
             ->with('success', 'Comment added successfully.');
+    }
+
+    public function create(Post $post)
+    {
+        $post->load(['user']);
+
+        return inertia()->modal('AddEditComment', [
+            'post' => fn () => $post,
+        ])->baseRoute('posts.show', ['post' => $post->id, 'slug' => $post->slug(), 'page' => request()->query('page')]);
+    }
+
+    public function edit(Comment $comment)
+    {
+        $comment->load(['post', 'user']);
+
+        return inertia()->modal('AddEditComment', [
+            'comment' => fn () => $comment,
+        ])->baseRoute('posts.show', ['post' => $comment->post_id, 'slug' => $comment->post->slug(), 'page' => request()->query('page')]);
     }
 
     public function update(Request $request, Comment $comment)
@@ -40,7 +58,7 @@ class CommentController extends Controller
 
         $comment->update($validated);
 
-        return to_route('posts.show', ['post' => $comment->post_id, 'page' => $request->query('page')])
+        return redirect($comment->post->showRoute(['page' => $request->query('page')]))
             ->with('success', 'Comment updated successfully.');
     }
 
@@ -51,7 +69,14 @@ class CommentController extends Controller
         $comment->delete();
         /* $this->authorize('delete', $comment); */
 
-        return to_route('posts.show', ['post' => $comment->post_id, 'page' => $request->query('page')])
+        return redirect($comment->post->showRoute(['page' => $request->query('page')]))
             ->with('success', 'Comment deleted successfully.');
+    }
+
+    public function delete(Comment $comment)
+    {
+        return inertia()->modal('DeleteComment', [
+            'comment' => fn () => $comment,
+        ])->baseRoute('posts.show', ['post' => $comment->post_id, 'slug' => $comment->post->slug(), 'page' => request()->query('page')]);
     }
 }
