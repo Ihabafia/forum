@@ -18,7 +18,7 @@ it('passes the post to the view', function () {
     $post->load(['user', 'topic']);
 
     $this->get($post->showRoute())
-        ->assertHasResource('post', PostResource::make($post));
+        ->assertHasResource('post', PostResource::make($post)->withLikePermission()->withAddEditPermission());
 });
 
 it('passes comments to the view', function () {
@@ -27,6 +27,10 @@ it('passes comments to the view', function () {
 
     $comments->load(['user']);
 
+    $expectedResource = CommentResource::collection($comments->reverse());
+
+    $expectedResource->collection->transform(fn (CommentResource $resource) => $resource->withLikePermission());
+
     $this->get($post->showRoute())
-        ->assertHasPaginatedResource('comments', CommentResource::collection($comments->reverse()));
+        ->assertHasPaginatedResource('comments', $expectedResource);
 });

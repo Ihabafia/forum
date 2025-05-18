@@ -3,6 +3,7 @@
         <div class="flex flex-1 justify-between md:hidden">
             <Link
                 :href="previousUrl"
+                :only="only"
                 class="relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-200 dark:border-gray-500 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-800"
                 preserve-scroll
             >
@@ -10,6 +11,7 @@
             </Link>
             <Link
                 :href="nextUrl"
+                :only="only"
                 class="relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-200 dark:border-gray-500 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-800"
                 preserve-scroll
             >
@@ -46,6 +48,7 @@
                                 !link.active,
                         }"
                         :href="link.url ?? ''"
+                        :only="only"
                         class="relative inline-flex items-center px-4 py-2"
                         preserve-scroll
                     >
@@ -72,6 +75,7 @@ const props = defineProps({
     },
 });
 
+const only = computed(() => (props.only.length === 0 ? [] : [...props.only, 'notification']));
 const previousUrl = computed(() => props.meta?.links?.[0]?.url || '');
 const nextUrl = computed(() => (props.meta?.links ? [...props.meta.links].reverse()[0]?.url || '' : ''));
 </script>

@@ -29,16 +29,19 @@ it('can generate additional query parameters on the show route', function () {
         ->toBe(route('posts.show', ['post' => $post, 'slug' => $post->slug(), 'page' => '2']));
 });
 
-it('will redirect if the slug is incorrect', function () {
+it('will redirect if the slug is incorrect', function (string $incorrectSlug) {
     // Arrange
     $post = Post::factory()->create([
         'title' => 'Hello, how are you?',
     ]);
 
     // Act & Assert
-    $this->get(route('posts.show', [$post, 'foo-bar', 'page' => 2]))
+    $this->get(route('posts.show', [$post, $incorrectSlug, 'page' => 2]))
         ->assertRedirect($post->showRoute(['page' => 2]));
-});
+})->with([
+    'foo-bar',
+    'hello',
+]);
 
 it('generates html from the markdown body', function () {
     // Arrange

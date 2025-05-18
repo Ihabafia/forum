@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\LikeController;
 use App\Http\Controllers\PostController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -28,6 +29,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     //    Route::resource('posts', PostController::class)->only(['store']);
     Route::resource('posts', PostController::class)->only(['create', 'store', 'edit', 'update', 'destroy']);
     Route::get('posts/{post}/delete', [PostController::class, 'delete'])->name('posts.delete');
+
+    Route::post('likes/{type}/{id}', [LikeController::class, 'store'])->name('likes.store');
+    Route::delete('likes/{type}/{id}', [LikeController::class, 'destroy'])->name('likes.destroy');
 });
 
 Route::get('posts/{topic?}', [PostController::class, 'index'])->name('posts.index');

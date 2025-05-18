@@ -8,12 +8,11 @@ import { Markdown } from 'tiptap-markdown';
 import { onMounted, watch } from 'vue';
 
 const props = defineProps({
-    modelValue: '',
     editorClass: '',
     placeholder: null,
 });
 
-const emit = defineEmits(['update:modelValue']);
+const model = defineModel();
 
 const editor = useEditor({
     extensions: [
@@ -46,7 +45,7 @@ const editor = useEditor({
     },
     onCreate: () => {
         watch(
-            () => props.modelValue,
+            model,
             (value) => {
                 if (value === editor.value?.storage.markdown.getMarkdown()) {
                     return;
@@ -58,11 +57,11 @@ const editor = useEditor({
             { immediate: true },
         );
     },
-    onUpdate: () => emit('update:modelValue', editor.value?.storage.markdown.getMarkdown()),
+    onUpdate: () => (model.value = editor.value?.storage.markdown.getMarkdown()),
 });
 
 onMounted(() => {
-    if (props.modelValue) {
+    if (model.value) {
         editor.value?.commands.focus();
     }
 });

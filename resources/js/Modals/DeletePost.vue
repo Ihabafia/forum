@@ -29,8 +29,8 @@ function destroyPost() {
                 </ModalHeader>
                 <!-- Modal Body -->
                 <ModalBody>
-                    <div class="text-md mb-4 font-semibold text-red-600 dark:text-red-500">You are about to delete the post:</div>
-                    <blockquote class="justify-sart flex size-full text-sm text-gray-800 dark:text-gray-400">"{{ post.body }}"</blockquote>
+                    <div class="text-md mb-4 font-semibold text-gray-600 dark:text-gray-500">You are about to delete this post!!</div>
+                    <!--                    <blockquote class="justify-sart flex size-full text-sm text-gray-800 dark:text-gray-400">"{{ post.html }}"</blockquote>-->
                 </ModalBody>
                 <!-- Modal Footer -->
                 <ModalFooter>

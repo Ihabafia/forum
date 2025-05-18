@@ -1,4 +1,7 @@
 <template>
+    <Head>
+        <link :href="post.route.show" rel="canonical" />
+    </Head>
     <AppLayout :breadcrumbs="breadcrumbs">
         <Container>
             <div class="fixed top-6 right-6 flex items-center justify-end gap-4 text-right">
@@ -19,7 +22,27 @@
             </div>
             <div class="mt-1 text-sm text-gray-500">
                 Created <span class="font-bold">{{ formatedDate }}</span> by <span class="font-bold">{{ post.user.name }}</span
-                >.
+                >, got <span class="text-sm font-semibold text-pink-500">{{ post.likes_count }}</span>
+            </div>
+            <div v-if="$page.props.auth.user">
+                <Link
+                    v-if="post.can.like"
+                    :href="route('likes.store', ['post', post.id])"
+                    class="inline-block cursor-pointer rounded-full bg-purple-600 px-3 py-1.5 text-white transition-colors hover:bg-pink-500"
+                    method="post"
+                >
+                    <HandThumbUpIcon class="mr-1 inline-block size-3" />
+                    Like
+                </Link>
+                <Link
+                    v-else
+                    :href="route('likes.destroy', ['post', post.id])"
+                    class="inline-block cursor-pointer rounded-full bg-green-600 px-3 py-1.5 text-white transition-colors hover:bg-pink-500"
+                    method="delete"
+                >
+                    <HandThumbUpIcon class="mr-1 inline-block size-3" />
+                    liked
+                </Link>
             </div>
             <article class="prose prose-sm dark:prose-invert mt-6 max-w-none" v-html="post.html" />
 
@@ -34,7 +57,7 @@
                 <div v-if="comments.meta.total > 0">
                     <ul class="divide-y">
                         <li v-for="comment in comments.data" :key="comment.id" class="px-0 py-4">
-                            <Comment :comment="comment" />
+                            <Comment :comment="comment" :current="comments.meta.current_page" :length="comments.data.length" />
                         </li>
                     </ul>
                     <Pagination :meta="comments.meta" :only="['comments']" />
@@ -45,7 +68,7 @@
     </AppLayout>
 </template>
 
-<script lang="ts" setup xmlns:flux="http://www.w3.org/1999/html">
+<script lang="ts" setup>
 import Comment from '@/components/Comment.vue';
 import Container from '@/components/Container.vue';
 import PageHeading from '@/components/PageHeading.vue';
@@ -56,7 +79,8 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import type { BreadcrumbItem } from '@/types';
 import { relativeDate } from '@/Utilities/date';
 import { off, on } from '@/Utilities/eventBuss';
-import { Link } from '@inertiajs/vue3';
+import { HandThumbUpIcon } from '@heroicons/vue/20/solid';
+import { Head, Link } from '@inertiajs/vue3';
 import { computed, onMounted, onUnmounted, ref } from 'vue';
 
 const props = defineProps(['post', 'comments']);

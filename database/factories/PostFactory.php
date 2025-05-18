@@ -21,6 +21,7 @@ class PostFactory extends Factory
             'topic_id' => Topic::factory(),
             'title' => str($this->faker->sentence())->beforeLast('.')->title(),
             'body' => Collection::times(rand(3, 8), fn () => $this->faker->realTextBetween(750, 1500))->join(PHP_EOL.PHP_EOL),
+            'likes_count' => 0,
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
         ];
