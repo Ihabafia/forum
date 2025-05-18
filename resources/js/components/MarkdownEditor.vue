@@ -8,7 +8,10 @@ import { Markdown } from 'tiptap-markdown';
 import { onMounted, watch } from 'vue';
 
 const props = defineProps({
-    editorClass: '',
+    editorClass: {
+        type: String,
+        default: '',
+    },
     placeholder: null,
 });
 
